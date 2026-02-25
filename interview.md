@@ -16,6 +16,7 @@ This app demonstrates:
 - SSR routes
 - Static/pre-rendered routes
 - Client-only route
+- Pinia state management route
 - Dynamic route params
 - Server-side and client-side API calls
 
@@ -59,6 +60,15 @@ This app demonstrates:
 - Server-side call: `await useFetch('/api/interview')` (during SSR)
 - Client-side call: button click -> `$fetch('/api/client-check')`
 - Great page to explain "same app can do both SSR and CSR data fetching."
+
+## `/pinia` (`pages/pinia.vue`)
+- Rendering: SSR by default (like normal Nuxt page)
+- Uses Pinia store: `useCounterStore()`
+- Demonstrates:
+  - reactive shared state (`count`)
+  - derived state (`doubleCount`)
+  - actions (`increment`, `reset`)
+  - async store action with API call (`fetchServerMessage`)
 
 ## `/posts/[id]` (`pages/posts/[id].vue`)
 - Rendering: SSR by default
@@ -136,6 +146,14 @@ Examples:
 - Derived reactive values from other reactive sources.
 - In dynamic route page, creates reactive `id` from route param.
 
+## `defineStore()` (Pinia)
+- Creates a global, reactive store shared across pages/components.
+- In this project, `stores/counter.ts` defines:
+  - state: `count`, `lastServerMessage`
+  - getter-like derived state: `doubleCount` (using `computed`)
+  - actions: `increment`, `reset`, `fetchServerMessage`
+- Interview point: Pinia is the recommended state management solution for Vue/Nuxt.
+
 ---
 
 ## 5) How Requests Move Through the App
@@ -198,14 +216,28 @@ How it is served:
 - `definePageMeta({ ssr: false })` allows selective CSR route behavior.
 - `defineRouteRules({ prerender: true })` allows selective static generation.
 - Dynamic routes are automatic via file naming (`[id].vue`).
+- Pinia is auto-integrated via `@pinia/nuxt` module and `stores/` convention.
 - Build output in `.output` clearly separates server runtime and public assets.
 
 ---
 
-## 9) Suggested Next Improvements (Optional)
+## 9) Simple Test Case in This Project
+
+- Test file: `tests/posts.test.ts`
+- Runner: Vitest (`npm run test`)
+- What it checks:
+  - at least 3 mock posts exist
+  - post IDs are numeric and unique
+
+Why this is useful in interviews:
+- shows you can add automated checks even in a basic starter
+- shows understanding of unit test structure (`describe`, `it`, `expect`)
+
+---
+
+## 10) Suggested Next Improvements (Optional)
 
 - Add middleware route guard example (`middleware/auth.ts`)
-- Add Pinia store for global state interview discussion
 - Add runtime config and env variables (`useRuntimeConfig`)
 - Add simple test setup (Vitest) for one API route and one page composable
 

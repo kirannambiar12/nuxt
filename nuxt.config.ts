@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  modules: ["@pinia/nuxt"],
   css: ["~/assets/main.css"],
   experimental: {
     inlineRouteRules: true

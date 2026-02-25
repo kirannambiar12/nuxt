@@ -9,6 +9,7 @@
         <NuxtLink to="/static">Static Page</NuxtLink>
         <NuxtLink to="/client">Client Page</NuxtLink>
         <NuxtLink to="/calls">Calls Demo</NuxtLink>
+        <NuxtLink to="/pinia">Pinia Demo</NuxtLink>
         <NuxtLink to="/posts/1">Dynamic Route</NuxtLink>
         <NuxtLink to="/about">About</NuxtLink>
       </nav>

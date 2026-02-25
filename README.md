@@ -8,8 +8,10 @@ Basic Nuxt setup with key interview features:
 - Static pre-rendered pages (`/static`, `/about`)
 - Client-side only page (`/client`)
 - Server and client API calls (`/calls`)
+- Pinia state management demo (`/pinia`)
 - Dynamic routing (`/posts/[id]`)
 - Nitro server API routes (`server/api/`)
+- Basic unit test with Vitest (`tests/posts.test.ts`)
 
 ## Setup
 
@@ -34,4 +36,10 @@ npm run preview
 
 ```bash
 npm run generate
+```
+
+## Run tests
+
+```bash
+npm run test
 ```
