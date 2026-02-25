@@ -241,3 +241,130 @@ Why this is useful in interviews:
 - Add runtime config and env variables (`useRuntimeConfig`)
 - Add simple test setup (Vitest) for one API route and one page composable
 
+---
+
+## 11) Frequently Asked Interview Questions (Direct Answers)
+
+## Q1) How to run specific components on server side and keep the rest client side?
+
+In Nuxt, the practical pattern is:
+- Keep the page SSR by default for SEO/content.
+- Wrap browser-only parts in `<ClientOnly>` so those render only on client.
+- For client-only routes, use `definePageMeta({ ssr: false })`.
+- For server-only islands/components, Nuxt also supports server components patterns (for advanced use), but `<ClientOnly>` is the most common interview-safe answer.
+
+Example pattern:
+
+```vue
+<template>
+  <section>
+    <!-- SSR-friendly content -->
+    <ServerContent />
+
+    <!-- Browser-only widget -->
+    <ClientOnly>
+      <InteractiveChart />
+    </ClientOnly>
+  </section>
+</template>
+```
+
+Interview point:
+- "Nuxt supports hybrid rendering route-by-route and even section-by-section."
+
+## Q2) Is it possible to add dependency array for `onMounted`?
+
+No. `onMounted` does not accept dependencies (unlike React's `useEffect` array).
+
+- `onMounted(() => {})` runs once after mount on the client.
+- If you need "run when dependency changes", use `watch`.
+
+Example:
+
+```ts
+const id = ref(1)
+
+onMounted(() => {
+  // runs once on client mount
+})
+
+watch(id, (newId, oldId) => {
+  // runs whenever id.value changes
+})
+```
+
+If you want it to run immediately and also on changes:
+
+```ts
+watch(
+  () => route.params.id,
+  (newId) => {
+    // react to route param updates
+  },
+  { immediate: true }
+)
+```
+
+## Q3) What does hydration mean?
+
+Hydration is when Vue/Nuxt attaches client-side JavaScript behavior to server-rendered HTML.
+
+Flow:
+1. Server renders HTML (SSR).
+2. Browser displays it quickly.
+3. Client JS loads.
+4. Vue hydrates: binds event listeners, state, and reactivity to existing DOM.
+
+Interview one-liner:
+- "Hydration makes SSR HTML interactive on the client without full re-render from scratch."
+
+## Q4) What is a client-side hydration error?
+
+A hydration error occurs when server-rendered HTML does not match what the client expects during hydration.
+
+Typical causes:
+- Non-deterministic values in template during SSR (`Math.random()`, `Date.now()`).
+- Using browser-only APIs (`window`, `localStorage`) in SSR render path.
+- Different data on server and client for initial render.
+- Conditional rendering that differs before hydration completes.
+
+How to avoid:
+- Keep first render deterministic.
+- Move browser-only logic to `onMounted`.
+- Use `<ClientOnly>` for client-only UI.
+- Use `useFetch`/`useAsyncData` properly so initial payload matches.
+
+## Q5) Difference between `useFetch` and `useAsyncData`?
+
+`useFetch`:
+- Best for HTTP/API endpoint calls.
+- Less boilerplate.
+- SSR-aware with payload integration.
+- Internally based on `useAsyncData` + `$fetch`.
+
+`useAsyncData`:
+- Generic async loader for any async logic.
+- More flexible (multiple API calls, custom transforms, SDK/database logic).
+- Requires explicit async function and usually an explicit key.
+
+Quick examples:
+
+```ts
+// concise API call
+const { data } = await useFetch("/api/posts")
+```
+
+```ts
+// custom async orchestration
+const { data } = await useAsyncData("dashboard", async () => {
+  const [posts, users] = await Promise.all([
+    $fetch("/api/posts"),
+    $fetch("/api/users")
+  ])
+  return { posts, userCount: users.length }
+})
+```
+
+Interview-safe summary:
+- "Use `useFetch` for straightforward endpoint fetching; use `useAsyncData` for custom async workflows."
+
